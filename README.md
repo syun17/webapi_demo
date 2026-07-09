@@ -1,5 +1,17 @@
 # 開発実務演習WebAPIデモアプリ
 
+WebAPIをまとめて試せるFlaskアプリです。
+
+## できること
+
+- 気象庁 天気予報API
+- PokeAPI
+- JSONPlaceholder
+- Icanhazdadjoke API
+- REST Countries API
+- Random User API
+- Lorem Picsum
+
 ## 1.Pythonをインストール
 
     https://www.python.org/downloads/
@@ -40,7 +52,9 @@
 
 ## 4.実行
 
-    run.pyで実行
+    python run.py
+
+ブラウザで http://127.0.0.1:5000/ を開いてください。
 
 
 
