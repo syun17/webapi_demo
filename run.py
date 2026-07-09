@@ -136,11 +136,11 @@ IMAGE_BLURS = [
 ]
 
 
-def render_page(**context):
+def render_page(template_name, **context):
 	if context.get("result") is not None and "formatted_result" not in context:
 		context["formatted_result"] = format_json_data(context["result"])
 	return render_template(
-		"index.html",
+		template_name,
 		api_cards=API_CARDS,
 		image_widths=IMAGE_WIDTHS,
 		image_heights=IMAGE_HEIGHTS,
@@ -151,7 +151,7 @@ def render_page(**context):
 
 @app.get("/")
 def index():
-	return render_page(page_key="home", page_title="WebAPI Demo")
+	return render_page("home.html", page_key="home", page_title="WebAPI Demo")
 
 
 @app.get("/weather")
@@ -162,6 +162,7 @@ def weather():
 		data = get_weather(area_code)
 		summary = f"{data['area_name']} の天気予報を取得しました。"
 		return render_page(
+			"weather.html",
 			page_key="weather",
 			page_title="気象庁 天気予報API",
 			weather_area_codes=weather_area_codes,
@@ -172,6 +173,7 @@ def weather():
 		)
 	except Exception as exc:  # noqa: BLE001
 		return render_page(
+			"weather.html",
 			page_key="weather",
 			page_title="気象庁 天気予報API",
 			weather_area_codes=[],
@@ -187,6 +189,7 @@ def pokemon():
 		data = get_pokemon(name)
 		summary = f"{data['name'].title()} の情報を取得しました。"
 		return render_page(
+			"pokemon.html",
 			page_key="pokemon",
 			page_title="PokeAPI",
 			pokemon_names=pokemon_names,
@@ -197,6 +200,7 @@ def pokemon():
 		)
 	except Exception as exc:  # noqa: BLE001
 		return render_page(
+			"pokemon.html",
 			page_key="pokemon",
 			page_title="PokeAPI",
 			pokemon_names=[],
@@ -212,6 +216,7 @@ def post():
 		data = get_post(int(post_id))
 		summary = f"投稿ID {data['id']} のデータを取得しました。"
 		return render_page(
+			"post.html",
 			page_key="post",
 			page_title="JSONPlaceholder",
 			post_ids=post_ids,
@@ -222,6 +227,7 @@ def post():
 		)
 	except Exception as exc:  # noqa: BLE001
 		return render_page(
+			"post.html",
 			page_key="post",
 			page_title="JSONPlaceholder",
 			post_ids=[],
@@ -235,6 +241,7 @@ def joke():
 		data = get_joke()
 		summary = data["attachments"][0]["text"] if data.get("attachments") else "ダジャレを取得しました。"
 		return render_page(
+			"joke.html",
 			page_key="joke",
 			page_title="Icanhazdadjoke API",
 			summary=summary,
@@ -243,6 +250,7 @@ def joke():
 		)
 	except Exception as exc:  # noqa: BLE001
 		return render_page(
+			"joke.html",
 			page_key="joke",
 			page_title="Icanhazdadjoke API",
 			error=str(exc),
@@ -267,6 +275,7 @@ def country():
 		}
 		summary = f"{first['name']['common']} の情報を取得しました。"
 		return render_page(
+			"country.html",
 			page_key="country",
 			page_title="REST Countries API",
 			country_names=country_names,
@@ -278,6 +287,7 @@ def country():
 		)
 	except Exception as exc:  # noqa: BLE001
 		return render_page(
+			"country.html",
 			page_key="country",
 			page_title="REST Countries API",
 			country_names=[],
@@ -301,6 +311,7 @@ def user():
 		}
 		summary = "ランダムユーザーを取得しました。"
 		return render_page(
+			"user.html",
 			page_key="user",
 			page_title="Random User API",
 			summary=summary,
@@ -310,6 +321,7 @@ def user():
 		)
 	except Exception as exc:  # noqa: BLE001
 		return render_page(
+			"user.html",
 			page_key="user",
 			page_title="Random User API",
 			error=str(exc),
@@ -336,6 +348,7 @@ def image():
 			"url": image_url,
 		}
 		return render_page(
+			"image.html",
 			page_key="image",
 			page_title="Lorem Picsum",
 			summary=summary,
@@ -347,6 +360,7 @@ def image():
 		)
 	except Exception as exc:  # noqa: BLE001
 		return render_page(
+			"image.html",
 			page_key="image",
 			page_title="Lorem Picsum",
 			error=str(exc),

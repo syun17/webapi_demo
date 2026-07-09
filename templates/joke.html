@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% from "_macros.html" import render_json_node %}
+
+{% block title %}{{ page_title }}{% endblock %}
+{% block hero_heading %}{{ page_title }}{% endblock %}
+{% block hero_panel_note %}<a class="card-link card-link--light" href="/">ホームに戻る</a>{% endblock %}
+
+{% block workspace %}
+  <div class="panel-head">
+    <div>
+      <p class="eyebrow">API result</p>
+      <h2>{{ page_title }}</h2>
+    </div>
+    {% if summary %}
+    <p class="summary">{{ summary }}</p>
+    {% endif %}
+  </div>
+
+  {% if error %}
+  <div class="alert alert-error">
+    <strong>取得に失敗しました。</strong>
+    <span>{{ error }}</span>
+  </div>
+  {% endif %}
+
+  {% if result %}
+  <section class="result-grid">
+    {% if result.attachments %}
+    <div class="api-result-card joke-card">
+      <h3 class="api-result-title">ダジャレ</h3>
+      <p class="joke-text">{{ result.attachments[0].text }}</p>
+    </div>
+    {% endif %}
+
+    <div class="json-tree">
+      {{ render_json_node(formatted_result) }}
+    </div>
+
+    <details class="json-raw">
+      <summary>raw JSON</summary>
+      <pre class="json-view">{{ result_json }}</pre>
+    </details>
+  </section>
+  {% else %}
+  <div class="instruction-grid">
+    <article class="instruction-card">
+      <h3>使い方</h3>
+      <p>ボタンを押すと、ランダムなダジャレを取得します。</p>
+    </article>
+    <article class="instruction-card">
+      <h3>ホームへ</h3>
+      <p><a class="card-link" href="/">API一覧に戻る</a></p>
+    </article>
+  </div>
+  {% endif %}
+
+  <form class="api-form api-form--action" action="/joke" method="get">
+    <h3>Icanhazdadjoke API</h3>
+    <button type="submit">ダジャレを取得する</button>
+  </form>
+{% endblock %}

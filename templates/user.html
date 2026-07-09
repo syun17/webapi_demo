@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% from "_macros.html" import render_json_node %}
+
+{% block title %}{{ page_title }}{% endblock %}
+{% block hero_heading %}{{ page_title }}{% endblock %}
+{% block hero_panel_note %}<a class="card-link card-link--light" href="/">ホームに戻る</a>{% endblock %}
+
+{% block workspace %}
+  <div class="panel-head">
+    <div>
+      <p class="eyebrow">API result</p>
+      <h2>{{ page_title }}</h2>
+    </div>
+    {% if summary %}
+    <p class="summary">{{ summary }}</p>
+    {% endif %}
+  </div>
+
+  {% if error %}
+  <div class="alert alert-error">
+    <strong>取得に失敗しました。</strong>
+    <span>{{ error }}</span>
+  </div>
+  {% endif %}
+
+  {% if result %}
+  <section class="result-grid">
+    {% if user_info %}
+    <div class="api-result-card user-card">
+      {% if user_info.picture %}
+      <img src="{{ user_info.picture }}" alt="{{ user_info.name }}" class="user-avatar">
+      {% endif %}
+      <div class="user-info">
+        <h3>{{ user_info.name }}</h3>
+        <p class="user-email">{{ user_info.email }}</p>
+        <div class="user-details">
+          <div class="detail-row">
+            <span class="detail-label">ユーザー名:</span>
+            <span class="detail-value">{{ user_info.login }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">電話:</span>
+            <span class="detail-value">{{ user_info.phone }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">国:</span>
+            <span class="detail-value">{{ user_info.country }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="json-tree">
+      {{ render_json_node(formatted_result) }}
+    </div>
+
+    <details class="json-raw">
+      <summary>raw JSON</summary>
+      <pre class="json-view">{{ result_json }}</pre>
+    </details>
+  </section>
+  {% else %}
+  <div class="instruction-grid">
+    <article class="instruction-card">
+      <h3>使い方</h3>
+      <p>ボタンを押すと、ランダムユーザーを取得します。</p>
+    </article>
+    <article class="instruction-card">
+      <h3>ホームへ</h3>
+      <p><a class="card-link" href="/">API一覧に戻る</a></p>
+    </article>
+  </div>
+  {% endif %}
+
+  <form class="api-form api-form--action" action="/user" method="get">
+    <h3>Random User API</h3>
+    <button type="submit">ユーザーを取得する</button>
+  </form>
+{% endblock %}
