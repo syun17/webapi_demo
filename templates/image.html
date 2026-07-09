@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% from "_macros.html" import render_json_node %}
+
+{% block title %}{{ page_title }}{% endblock %}
+{% block hero_heading %}{{ page_title }}{% endblock %}
+{% block hero_panel_note %}<a class="card-link card-link--light" href="/">ホームに戻る</a>{% endblock %}
+
+{% block workspace %}
+  <div class="panel-head">
+    <div>
+      <p class="eyebrow">API result</p>
+      <h2>{{ page_title }}</h2>
+    </div>
+    {% if summary %}
+    <p class="summary">{{ summary }}</p>
+    {% endif %}
+  </div>
+
+  {% if error %}
+  <div class="alert alert-error">
+    <strong>取得に失敗しました。</strong>
+    <span>{{ error }}</span>
+  </div>
+  {% endif %}
+
+  {% if result %}
+  <section class="result-grid">
+    {% if image_url %}
+    <div class="api-result-card image-card">
+      <img src="{{ image_url }}" alt="Generated image" class="result-image">
+      <div class="image-info">
+        <p>サイズ: {{ image_width }} x {{ image_height }}</p>
+        <p class="image-url">{{ image_url }}</p>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="json-tree">
+      {{ render_json_node(formatted_result) }}
+    </div>
+
+    <details class="json-raw">
+      <summary>raw JSON</summary>
+      <pre class="json-view">{{ result_json }}</pre>
+    </details>
+  </section>
+  {% else %}
+  <div class="instruction-grid">
+    <article class="instruction-card">
+      <h3>使い方</h3>
+      <p>幅・高さ・オプションを選んで送信すると、画像URLが生成されます。</p>
+    </article>
+    <article class="instruction-card">
+      <h3>ホームへ</h3>
+      <p><a class="card-link" href="/">API一覧に戻る</a></p>
+    </article>
+  </div>
+  {% endif %}
+
+  <form class="api-form" action="/image" method="get">
+    <h3>Lorem Picsum</h3>
+    <div class="inline-fields">
+      <div>
+        <label for="image_width">幅</label>
+        <select id="image_width" name="width">
+          {% for option in image_widths %}
+          <option value="{{ option.value }}">{{ option.label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label for="image_height">高さ</label>
+        <select id="image_height" name="height">
+          {% for option in image_heights %}
+          <option value="{{ option.value }}">{{ option.label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="inline-options">
+      <label for="grayscale_mode">grayscale</label>
+      <select id="grayscale_mode" name="grayscale">
+        <option value="off">なし</option>
+        <option value="on">あり</option>
+      </select>
+      <label for="blur_level">blur</label>
+      <select id="blur_level" name="blur">
+        {% for option in image_blurs %}
+        <option value="{{ option.value }}">{{ option.label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <button type="submit">生成する</button>
+  </form>
+{% endblock %}

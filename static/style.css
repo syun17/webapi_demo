@@ -1,0 +1,637 @@
+:root {
+  color-scheme: light;
+  --bg: #0b1020;
+  --bg-soft: #121a33;
+  --card: rgba(255, 255, 255, 0.08);
+  --card-border: rgba(255, 255, 255, 0.12);
+  --text: #eff3ff;
+  --muted: #b8c0e0;
+  --accent: #7dd3fc;
+  --accent-strong: #38bdf8;
+  --warning: #fbbf24;
+  --danger: #fb7185;
+  --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Segoe UI", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(56, 189, 248, 0.2), transparent 28%),
+    radial-gradient(circle at top right, rgba(251, 191, 36, 0.14), transparent 22%),
+    linear-gradient(180deg, #09101d 0%, #0f172a 50%, #111827 100%);
+}
+
+.page-shell {
+  width: min(1200px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 32px 0 48px;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(280px, 0.8fr);
+  gap: 24px;
+  align-items: stretch;
+  margin-bottom: 28px;
+}
+
+.hero-copy,
+.hero-panel,
+.api-card,
+.workspace,
+.instruction-card,
+.api-form {
+  backdrop-filter: blur(20px);
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--shadow);
+}
+
+.hero-copy {
+  border-radius: 28px;
+  padding: 36px;
+}
+
+.hero-copy h1 {
+  margin: 8px 0 16px;
+  font-size: clamp(2rem, 5vw, 4rem);
+  line-height: 1.02;
+}
+
+.eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+  font-size: 0.78rem;
+}
+
+.lead,
+.summary,
+.api-card p,
+.instruction-card p,
+.hero-panel__note {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.hero-panel {
+  border-radius: 28px;
+  padding: 28px;
+  display: grid;
+  align-content: space-between;
+  gap: 12px;
+}
+
+.hero-panel__label {
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.8rem;
+}
+
+.hero-panel__value {
+  font-size: 4rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  gap: 24px;
+}
+
+.cards {
+  display: grid;
+  gap: 16px;
+  align-content: start;
+}
+
+.api-card {
+  border-radius: 22px;
+  padding: 20px;
+}
+
+.api-card.is-active {
+  border-color: rgba(125, 211, 252, 0.65);
+  box-shadow: 0 0 0 1px rgba(125, 211, 252, 0.15), var(--shadow);
+}
+
+.api-card h2,
+.workspace h2,
+.api-form h3,
+.instruction-card h3 {
+  margin: 0 0 10px;
+}
+
+.card-link {
+  display: inline-flex;
+  margin-top: 8px;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.card-link--light {
+  color: #e2e8f0;
+}
+
+.workspace {
+  border-radius: 28px;
+  padding: 28px;
+}
+
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.summary {
+  margin: 6px 0 0;
+  text-align: right;
+  max-width: 360px;
+}
+
+.alert {
+  border-radius: 18px;
+  padding: 14px 16px;
+  margin-bottom: 18px;
+}
+
+.alert-error {
+  background: rgba(251, 113, 133, 0.12);
+  border: 1px solid rgba(251, 113, 133, 0.35);
+}
+
+.alert-warning {
+  background: rgba(251, 191, 36, 0.12);
+  border: 1px solid rgba(251, 191, 36, 0.35);
+}
+
+.result-grid {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.result-spotlight {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
+  padding: 18px;
+  border-radius: 22px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.result-spotlight--image {
+  grid-template-columns: 1fr;
+}
+
+.pokemon-image,
+.preview-image {
+  display: block;
+  width: 100%;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.json-view {
+  margin: 0;
+  padding: 18px;
+  overflow: auto;
+  border-radius: 22px;
+  background: #08111f;
+  color: #d7e2ff;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+.json-tree {
+  display: grid;
+  gap: 12px;
+}
+
+.json-node {
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(8, 17, 31, 0.72);
+  padding: 14px 16px;
+}
+
+.json-node--object,
+.json-node--array {
+  display: grid;
+  gap: 12px;
+}
+
+.json-node--primitive {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: baseline;
+}
+
+.json-node__head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  color: var(--muted);
+}
+
+.json-node__label {
+  color: var(--accent);
+  font-weight: 700;
+  word-break: break-word;
+}
+
+.json-node__meta {
+  font-size: 0.84rem;
+  white-space: nowrap;
+}
+
+.json-node__children {
+  display: grid;
+  gap: 10px;
+  padding-left: 12px;
+  border-left: 1px solid rgba(125, 211, 252, 0.22);
+}
+
+.json-node__value {
+  color: #f8fafc;
+  word-break: break-word;
+}
+
+.json-node__truncated {
+  color: var(--muted);
+  font-style: italic;
+  padding: 0 2px;
+}
+
+.json-raw {
+  margin-top: 8px;
+}
+
+.json-raw summary {
+  cursor: pointer;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+
+.instruction-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.instruction-card,
+.api-form {
+  border-radius: 22px;
+  padding: 18px;
+}
+
+.forms {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.api-form label {
+  display: block;
+  margin: 10px 0 6px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.api-form input,
+.api-form select {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(7, 13, 26, 0.8);
+  color: var(--text);
+}
+
+.api-form button {
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+  color: #04111f;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.api-form--action {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.inline-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.inline-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 10px;
+  color: var(--muted);
+}
+
+.inline-options label {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  margin: 0;
+}
+
+.inline-options input {
+  width: auto;
+}
+
+@media (max-width: 980px) {
+  .hero,
+  .layout,
+  .forms,
+  .instruction-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .panel-head {
+    flex-direction: column;
+  }
+
+  .summary {
+    text-align: left;
+  }
+}
+
+@media (max-width: 640px) {
+  .page-shell {
+    width: min(100% - 20px, 1200px);
+    padding: 16px 0 28px;
+  }
+
+  .hero-copy,
+  .hero-panel,
+  .workspace {
+    padding: 20px;
+    border-radius: 22px;
+  }
+
+  .result-spotlight {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-panel__value {
+    font-size: 3rem;
+  }
+}
+
+/* API Result Card Styles */
+.api-result-card {
+  border-radius: 22px;
+  padding: 22px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: grid;
+  gap: 16px;
+}
+
+.api-result-title {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--text);
+}
+
+/* Pokemon Card */
+.pokemon-card {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
+}
+
+.pokemon-image {
+  display: block;
+  width: 100%;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.pokemon-info h3 {
+  margin: 0 0 12px;
+  font-size: 1.3rem;
+}
+
+.pokemon-types,
+.pokemon-stats {
+  margin: 8px 0;
+  color: var(--muted);
+}
+
+/* Weather Items */
+.weather-items {
+  display: grid;
+  gap: 12px;
+}
+
+.weather-item {
+  display: grid;
+  grid-template-columns: 100px minmax(0, 1fr);
+  gap: 12px;
+  padding: 12px;
+  border-radius: 14px;
+  background: rgba(8, 17, 31, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.weather-date {
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.weather-text {
+  color: var(--muted);
+}
+
+/* Post Card */
+.post-card {
+  padding: 24px;
+}
+
+.post-title {
+  margin: 0 0 16px;
+  font-size: 1.1rem;
+  color: var(--accent);
+}
+
+.post-heading {
+  margin: 0 0 12px;
+  font-size: 1.2rem;
+}
+
+.post-body {
+  margin: 0 0 16px;
+  line-height: 1.8;
+  color: var(--muted);
+}
+
+.post-meta {
+  display: flex;
+  gap: 12px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+/* Joke Card */
+.joke-card {
+  padding: 24px;
+}
+
+.joke-text {
+  margin: 16px 0 0;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--text);
+}
+
+/* Country Card */
+.country-card {
+  padding: 24px;
+}
+
+.country-flag {
+  font-size: 3.5rem;
+  margin: 12px 0;
+}
+
+.country-details {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+/* User Card */
+.user-card {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.user-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(125, 211, 252, 0.3);
+}
+
+.user-info h3 {
+  margin: 0 0 8px;
+  font-size: 1.3rem;
+}
+
+.user-email {
+  margin: 0;
+  color: var(--accent);
+}
+
+.user-details {
+  display: grid;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+/* Image Card */
+.image-card {
+  padding: 24px;
+}
+
+.result-image {
+  display: block;
+  width: 100%;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.04);
+  margin-bottom: 16px;
+  max-height: 500px;
+  object-fit: cover;
+}
+
+.image-info {
+  display: grid;
+  gap: 8px;
+}
+
+.image-info p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.image-url {
+  word-break: break-all;
+  font-size: 0.85rem;
+}
+
+/* Detail Rows */
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(8, 17, 31, 0.5);
+}
+
+.detail-label {
+  color: var(--accent);
+  font-weight: 600;
+  min-width: 100px;
+}
+
+.detail-value {
+  color: var(--text);
+  text-align: right;
+  flex: 1;
+}
+
+@media (max-width: 640px) {
+  .pokemon-card {
+    grid-template-columns: 1fr;
+  }
+
+  .weather-item {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-row {
+    flex-direction: column;
+  }
+
+  .detail-value {
+    text-align: left;
+  }
+}

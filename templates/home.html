@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}WebAPI Demo{% endblock %}
+{% block hero_heading %}複数のAPIを1つずつ開けるデモアプリ{% endblock %}
+{% block hero_lead %}ホーム画面から各APIページへ遷移し、必要なものだけを読み込みます。{% endblock %}
+{% block hero_panel_note %}各APIは専用ページで開きます。{% endblock %}
+
+{% block workspace %}
+  <div class="panel-head">
+    <div>
+      <p class="eyebrow">Start here</p>
+      <h2>使い方</h2>
+    </div>
+  </div>
+
+  <div class="instruction-grid">
+    <article class="instruction-card">
+      <h3>使い方</h3>
+      <p>左のカードからAPIを選んで、専用ページを開いてください。</p>
+    </article>
+    <article class="instruction-card">
+      <h3>構成</h3>
+      <p>各APIページでは、そのAPIに必要なものだけを読み込みます。</p>
+    </article>
+  </div>
+{% endblock %}

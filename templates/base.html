@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}WebAPI Demo{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">{% block hero_eyebrow %}Web API demo{% endblock %}</p>
+        <h1>{% block hero_heading %}WebAPI Demo{% endblock %}</h1>
+        <p class="lead">{% block hero_lead %}複数のAPIを1つずつ開けるデモアプリです。{% endblock %}</p>
+      </div>
+      <div class="hero-panel">
+        <div class="hero-panel__label">{% block hero_panel_label %}対応API{% endblock %}</div>
+        <div class="hero-panel__value">{% block hero_panel_value %}7件{% endblock %}</div>
+        <div class="hero-panel__note">{% block hero_panel_note %}<a class="card-link card-link--light" href="/">ホームに戻る</a>{% endblock %}</div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="cards">
+        {% for card in api_cards %}
+        <article class="api-card {% if page_key != 'home' and page_key == card.path[1:] %}is-active{% endif %}">
+          <h2>{{ card.title }}</h2>
+          <p>{{ card.description }}</p>
+          <a class="card-link" href="{{ card.path }}">開く</a>
+        </article>
+        {% endfor %}
+      </section>
+
+      <section class="workspace">
+        {% block workspace %}{% endblock %}
+      </section>
+    </main>
+  </div>
+</body>
+</html>
