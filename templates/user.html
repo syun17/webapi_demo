@@ -23,6 +23,22 @@
   </div>
   {% endif %}
 
+  <div class="instruction-grid">
+    <article class="instruction-card">
+      <h3>使い方</h3>
+      <p>ボタンを押すと、ランダムユーザーを取得します。</p>
+    </article>
+    <article class="instruction-card">
+      <h3>ホームへ</h3>
+      <p><a class="card-link" href="/">API一覧に戻る</a></p>
+    </article>
+  </div>
+
+  <form class="api-form api-form--action" action="/user" method="get">
+    <h3>Random User API</h3>
+    <button type="submit">ユーザーを取得する</button>
+  </form>
+
   {% if result %}
   <section class="result-grid">
     {% if user_info %}
@@ -60,21 +76,7 @@
       <pre class="json-view">{{ result_json }}</pre>
     </details>
   </section>
-  {% else %}
-  <div class="instruction-grid">
-    <article class="instruction-card">
-      <h3>使い方</h3>
-      <p>ボタンを押すと、ランダムユーザーを取得します。</p>
-    </article>
-    <article class="instruction-card">
-      <h3>ホームへ</h3>
-      <p><a class="card-link" href="/">API一覧に戻る</a></p>
-    </article>
-  </div>
   {% endif %}
 
-  <form class="api-form api-form--action" action="/user" method="get">
-    <h3>Random User API</h3>
-    <button type="submit">ユーザーを取得する</button>
-  </form>
+  
 {% endblock %}

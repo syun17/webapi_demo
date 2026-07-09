@@ -23,6 +23,28 @@
   </div>
   {% endif %}
 
+  <div class="instruction-grid">
+    <article class="instruction-card">
+      <h3>使い方</h3>
+      <p>投稿IDを選んで送信すると、結果がこの下に表示されます。</p>
+    </article>
+    <article class="instruction-card">
+      <h3>ホームへ</h3>
+      <p><a class="card-link" href="/">API一覧に戻る</a></p>
+    </article>
+  </div>
+
+  <form class="api-form" action="/post" method="get">
+    <h3>JSONPlaceholder</h3>
+    <label for="post_id">投稿ID</label>
+    <select id="post_id" name="post_id">
+      {% for option in post_ids %}
+      <option value="{{ option.value }}" {% if option.value == selected_post_id %}selected{% endif %}>{{ option.label }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit">取得する</button>
+  </form>
+
   {% if result %}
   <section class="result-grid">
     {% if result.title %}
@@ -45,27 +67,7 @@
       <pre class="json-view">{{ result_json }}</pre>
     </details>
   </section>
-  {% else %}
-  <div class="instruction-grid">
-    <article class="instruction-card">
-      <h3>使い方</h3>
-      <p>投稿IDを選んで送信すると、結果がこの下に表示されます。</p>
-    </article>
-    <article class="instruction-card">
-      <h3>ホームへ</h3>
-      <p><a class="card-link" href="/">API一覧に戻る</a></p>
-    </article>
-  </div>
   {% endif %}
 
-  <form class="api-form" action="/post" method="get">
-    <h3>JSONPlaceholder</h3>
-    <label for="post_id">投稿ID</label>
-    <select id="post_id" name="post_id">
-      {% for option in post_ids %}
-      <option value="{{ option.value }}" {% if option.value == selected_post_id %}selected{% endif %}>{{ option.label }}</option>
-      {% endfor %}
-    </select>
-    <button type="submit">取得する</button>
-  </form>
+  
 {% endblock %}

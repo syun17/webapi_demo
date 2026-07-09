@@ -23,28 +23,6 @@
   </div>
   {% endif %}
 
-  {% if result %}
-  <section class="result-grid">
-    {% if image_url %}
-    <div class="api-result-card image-card">
-      <img src="{{ image_url }}" alt="Generated image" class="result-image">
-      <div class="image-info">
-        <p>サイズ: {{ image_width }} x {{ image_height }}</p>
-        <p class="image-url">{{ image_url }}</p>
-      </div>
-    </div>
-    {% endif %}
-
-    <div class="json-tree">
-      {{ render_json_node(formatted_result) }}
-    </div>
-
-    <details class="json-raw">
-      <summary>raw JSON</summary>
-      <pre class="json-view">{{ result_json }}</pre>
-    </details>
-  </section>
-  {% else %}
   <div class="instruction-grid">
     <article class="instruction-card">
       <h3>使い方</h3>
@@ -55,7 +33,6 @@
       <p><a class="card-link" href="/">API一覧に戻る</a></p>
     </article>
   </div>
-  {% endif %}
 
   <form class="api-form" action="/image" method="get">
     <h3>Lorem Picsum</h3>
@@ -92,4 +69,29 @@
     </div>
     <button type="submit">生成する</button>
   </form>
+
+  {% if result %}
+  <section class="result-grid">
+    {% if image_url %}
+    <div class="api-result-card image-card">
+      <img src="{{ image_url }}" alt="Generated image" class="result-image">
+      <div class="image-info">
+        <p>サイズ: {{ image_width }} x {{ image_height }}</p>
+        <p class="image-url">{{ image_url }}</p>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="json-tree">
+      {{ render_json_node(formatted_result) }}
+    </div>
+
+    <details class="json-raw">
+      <summary>raw JSON</summary>
+      <pre class="json-view">{{ result_json }}</pre>
+    </details>
+  </section>
+  {% endif %}
+
+  
 {% endblock %}

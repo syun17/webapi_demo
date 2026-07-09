@@ -23,6 +23,22 @@
   </div>
   {% endif %}
 
+  <div class="instruction-grid">
+    <article class="instruction-card">
+      <h3>使い方</h3>
+      <p>ボタンを押すと、ランダムな名言や引用文を取得します。</p>
+    </article>
+    <article class="instruction-card">
+      <h3>ホームへ</h3>
+      <p><a class="card-link" href="/">API一覧に戻る</a></p>
+    </article>
+  </div>
+
+  <form class="api-form api-form--action" action="/quote" method="get">
+    <h3>DummyJSON Quotes API</h3>
+    <button type="submit">引用文を取得する</button>
+  </form>
+
   {% if result %}
   <section class="result-grid">
     <div class="api-result-card joke-card">
@@ -40,21 +56,7 @@
       <pre class="json-view">{{ result_json }}</pre>
     </details>
   </section>
-  {% else %}
-  <div class="instruction-grid">
-    <article class="instruction-card">
-      <h3>使い方</h3>
-      <p>ボタンを押すと、ランダムな名言や引用文を取得します。</p>
-    </article>
-    <article class="instruction-card">
-      <h3>ホームへ</h3>
-      <p><a class="card-link" href="/">API一覧に戻る</a></p>
-    </article>
-  </div>
   {% endif %}
 
-  <form class="api-form api-form--action" action="/quote" method="get">
-    <h3>DummyJSON Quotes API</h3>
-    <button type="submit">引用文を取得する</button>
-  </form>
+  
 {% endblock %}

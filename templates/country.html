@@ -23,6 +23,28 @@
   </div>
   {% endif %}
 
+  <div class="instruction-grid">
+    <article class="instruction-card">
+      <h3>使い方</h3>
+      <p>国名を選んで送信すると、結果がこの下に表示されます。</p>
+    </article>
+    <article class="instruction-card">
+      <h3>ホームへ</h3>
+      <p><a class="card-link" href="/">API一覧に戻る</a></p>
+    </article>
+  </div>
+
+  <form class="api-form" action="/country" method="get">
+    <h3>REST Countries API</h3>
+    <label for="country_name">国名</label>
+    <select id="country_name" name="name">
+      {% for option in country_names %}
+      <option value="{{ option.value }}" {% if option.value == selected_country_name %}selected{% endif %}>{{ option.label }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit">取得する</button>
+  </form>
+
   {% if result %}
   <section class="result-grid">
     {% if country_info %}
@@ -61,27 +83,7 @@
       <pre class="json-view">{{ result_json }}</pre>
     </details>
   </section>
-  {% else %}
-  <div class="instruction-grid">
-    <article class="instruction-card">
-      <h3>使い方</h3>
-      <p>国名を選んで送信すると、結果がこの下に表示されます。</p>
-    </article>
-    <article class="instruction-card">
-      <h3>ホームへ</h3>
-      <p><a class="card-link" href="/">API一覧に戻る</a></p>
-    </article>
-  </div>
   {% endif %}
 
-  <form class="api-form" action="/country" method="get">
-    <h3>REST Countries API</h3>
-    <label for="country_name">国名</label>
-    <select id="country_name" name="name">
-      {% for option in country_names %}
-      <option value="{{ option.value }}" {% if option.value == selected_country_name %}selected{% endif %}>{{ option.label }}</option>
-      {% endfor %}
-    </select>
-    <button type="submit">取得する</button>
-  </form>
+  
 {% endblock %}
