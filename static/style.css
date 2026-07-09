@@ -518,6 +518,13 @@ body {
   color: var(--text);
 }
 
+.quote-author {
+  margin: 0;
+  text-align: right;
+  color: var(--muted);
+  font-style: italic;
+}
+
 /* Country Card */
 .country-card {
   padding: 24px;
