@@ -256,6 +256,15 @@ def country():
 		name = request.args.get("name", country_names[0]["value"] if country_names else "Japan").strip() or "Japan"
 		data = get_country(name)
 		first = data[0]
+		# テンプレート用に国情報を抽出
+		country_info = {
+			"common": first.get("name", {}).get("common", ""),
+			"capital": first.get("capital", []),
+			"region": first.get("region", ""),
+			"population": first.get("population"),
+			"languages": list(first.get("languages", {}).values()) if first.get("languages") else [],
+			"flags": first.get("flags", {}),
+		}
 		summary = f"{first['name']['common']} の情報を取得しました。"
 		return render_page(
 			page_key="country",
@@ -264,6 +273,7 @@ def country():
 			selected_country_name=name,
 			summary=summary,
 			result=data,
+			country_info=country_info,
 			result_json=json.dumps(data, ensure_ascii=False, indent=2),
 		)
 	except Exception as exc:  # noqa: BLE001
@@ -279,12 +289,23 @@ def country():
 def user():
 	try:
 		data = get_random_user()
+		# テンプレート用にユーザー情報を抽出
+		user_data = data.get("results", [{}])[0]
+		user_info = {
+			"name": f"{user_data.get('name', {}).get('first', '')} {user_data.get('name', {}).get('last', '')}",
+			"email": user_data.get("email", ""),
+			"login": user_data.get("login", {}).get("username", ""),
+			"phone": user_data.get("phone", ""),
+			"country": user_data.get("location", {}).get("country", ""),
+			"picture": user_data.get("picture", {}).get("large", ""),
+		}
 		summary = "ランダムユーザーを取得しました。"
 		return render_page(
 			page_key="user",
 			page_title="Random User API",
 			summary=summary,
 			result=data,
+			user_info=user_info,
 			result_json=json.dumps(data, ensure_ascii=False, indent=2),
 		)
 	except Exception as exc:  # noqa: BLE001
@@ -321,6 +342,8 @@ def image():
 			result=result,
 			result_json=json.dumps(result, ensure_ascii=False, indent=2),
 			image_url=image_url,
+			image_width=width_value,
+			image_height=height_value,
 		)
 	except Exception as exc:  # noqa: BLE001
 		return render_page(

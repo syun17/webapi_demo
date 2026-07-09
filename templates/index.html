@@ -112,18 +112,116 @@
         </div>
         {% elif result %}
         <section class="result-grid">
-          {% if result.name and result.image %}
-          <div class="result-spotlight">
-            <img src="{{ result.image }}" alt="{{ result.name }}" class="pokemon-image">
-            <div>
-              <h3>{{ result.name|title }} #{{ result.id }}</h3>
-              <p>タイプ: {{ result.types|join(', ') }}</p>
-              <p>高さ: {{ result.height }} / 重さ: {{ result.weight }}</p>
+          <!-- 天気予報の専用表示 -->
+          {% if page_key == 'weather' and result.items %}
+          <div class="api-result-card">
+            <h3 class="api-result-title">{{ result.area_name }}</h3>
+            <div class="weather-items">
+              {% for item in result.items %}
+              <div class="weather-item">
+                <div class="weather-date">{{ item.date }}</div>
+                <div class="weather-text">{{ item.weather }}</div>
+              </div>
+              {% endfor %}
             </div>
           </div>
-          {% elif result.url and image_url %}
-          <div class="result-spotlight result-spotlight--image">
-            <img src="{{ image_url }}" alt="Picsum preview" class="preview-image">
+          {% endif %}
+
+          <!-- ポケモンの専用表示 -->
+          {% if page_key == 'pokemon' and result.name and result.image %}
+          <div class="api-result-card pokemon-card">
+            <img src="{{ result.image }}" alt="{{ result.name }}" class="pokemon-image">
+            <div class="pokemon-info">
+              <h3>{{ result.name|title }} #{{ result.id }}</h3>
+              <p class="pokemon-types">タイプ: {{ result.types|join(', ') }}</p>
+              <p class="pokemon-stats">高さ: {{ result.height }} / 重さ: {{ result.weight }}</p>
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- 投稿の専用表示 -->
+          {% if page_key == 'post' and result.title %}
+          <div class="api-result-card post-card">
+            <h3 class="post-title">投稿 #{{ result.id }}</h3>
+            <h4 class="post-heading">{{ result.title }}</h4>
+            <p class="post-body">{{ result.body }}</p>
+            <div class="post-meta">
+              <span>ユーザーID: {{ result.userId }}</span>
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- ダジャレの専用表示 -->
+          {% if page_key == 'joke' and result.attachments %}
+          <div class="api-result-card joke-card">
+            <h3 class="api-result-title">ダジャレ</h3>
+            <p class="joke-text">{{ result.attachments[0].text }}</p>
+          </div>
+          {% endif %}
+
+          <!-- 国情報の専用表示 -->
+          {% if page_key == 'country' and country_info %}
+          <div class="api-result-card country-card">
+            <h3 class="api-result-title">{{ country_info.common }}</h3>
+            {% if country_info.flags %}
+            <div class="country-flag">{{ country_info.flags.unicode }}</div>
+            {% endif %}
+            <div class="country-details">
+              <div class="detail-row">
+                <span class="detail-label">首都:</span>
+                <span class="detail-value">{{ country_info.capital|join(', ') if country_info.capital else '不明' }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">地域:</span>
+                <span class="detail-value">{{ country_info.region }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">人口:</span>
+                <span class="detail-value">{{ country_info.population|default('不明') }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">言語:</span>
+                <span class="detail-value">{{ country_info.languages|join(', ') if country_info.languages else '不明' }}</span>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- ランダムユーザーの専用表示 -->
+          {% if page_key == 'user' and user_info %}
+          <div class="api-result-card user-card">
+            {% if user_info.picture %}
+            <img src="{{ user_info.picture }}" alt="{{ user_info.name }}" class="user-avatar">
+            {% endif %}
+            <div class="user-info">
+              <h3>{{ user_info.name }}</h3>
+              <p class="user-email">{{ user_info.email }}</p>
+              <div class="user-details">
+                <div class="detail-row">
+                  <span class="detail-label">ユーザー名:</span>
+                  <span class="detail-value">{{ user_info.login }}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">電話:</span>
+                  <span class="detail-value">{{ user_info.phone }}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">国:</span>
+                  <span class="detail-value">{{ user_info.country }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- 画像の専用表示 -->
+          {% if page_key == 'image' and image_url %}
+          <div class="api-result-card image-card">
+            <img src="{{ image_url }}" alt="Generated image" class="result-image">
+            <div class="image-info">
+              <p>サイズ: {{ image_width }} x {{ image_height }}</p>
+              <p class="image-url">{{ image_url }}</p>
+            </div>
           </div>
           {% endif %}
 
