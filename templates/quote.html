@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% from "_macros.html" import render_json_node %}
+
+{% block title %}{{ page_title }}{% endblock %}
+{% block hero_heading %}{{ page_title }}{% endblock %}
+{% block hero_panel_note %}<a class="card-link card-link--light" href="/">ホームに戻る</a>{% endblock %}
+
+{% block workspace %}
+  <div class="panel-head">
+    <div>
+      <p class="eyebrow">API result</p>
+      <h2>{{ page_title }}</h2>
+    </div>
+    {% if summary %}
+    <p class="summary">{{ summary }}</p>
+    {% endif %}
+  </div>
+
+  {% if error %}
+  <div class="alert alert-error">
+    <strong>取得に失敗しました。</strong>
+    <span>{{ error }}</span>
+  </div>
+  {% endif %}
+
+  {% if result %}
+  <section class="result-grid">
+    <div class="api-result-card joke-card">
+      <h3 class="api-result-title">引用文</h3>
+      <p class="joke-text">{{ result.quote }}</p>
+      <p class="quote-author">- {{ result.author }}</p>
+    </div>
+
+    <div class="json-tree">
+      {{ render_json_node(formatted_result) }}
+    </div>
+
+    <details class="json-raw">
+      <summary>raw JSON</summary>
+      <pre class="json-view">{{ result_json }}</pre>
+    </details>
+  </section>
+  {% else %}
+  <div class="instruction-grid">
+    <article class="instruction-card">
+      <h3>使い方</h3>
+      <p>ボタンを押すと、ランダムな名言や引用文を取得します。</p>
+    </article>
+    <article class="instruction-card">
+      <h3>ホームへ</h3>
+      <p><a class="card-link" href="/">API一覧に戻る</a></p>
+    </article>
+  </div>
+  {% endif %}
+
+  <form class="api-form api-form--action" action="/quote" method="get">
+    <h3>DummyJSON Quotes API</h3>
+    <button type="submit">引用文を取得する</button>
+  </form>
+{% endblock %}

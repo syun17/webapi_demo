@@ -8,6 +8,7 @@ WebAPIをまとめて試せるFlaskアプリです。
 - PokeAPI
 - JSONPlaceholder
 - Icanhazdadjoke API
+- DummyJSON Quotes API
 - REST Countries API
 - Random User API
 - Lorem Picsum

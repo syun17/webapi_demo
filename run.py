@@ -14,6 +14,7 @@ from wether import (
 	get_pokemon,
 	get_pokemon_name_options,
 	get_random_user,
+	get_quote,
 	get_weather_area_options,
 	get_weather,
 )
@@ -97,6 +98,12 @@ API_CARDS = [
 		"placeholder": "",
 	},
 	{
+		"title": "DummyJSON Quotes API",
+		"description": "ランダムな名言や引用文を取得します。",
+		"path": "/quote",
+		"placeholder": "",
+	},
+	{
 		"title": "REST Countries API",
 		"description": "国名を指定して首都や人口などの情報を取得します。",
 		"path": "/country",
@@ -142,6 +149,7 @@ def render_page(template_name, **context):
 	return render_template(
 		template_name,
 		api_cards=API_CARDS,
+		api_card_count=len(API_CARDS),
 		image_widths=IMAGE_WIDTHS,
 		image_heights=IMAGE_HEIGHTS,
 		image_blurs=IMAGE_BLURS,
@@ -253,6 +261,28 @@ def joke():
 			"joke.html",
 			page_key="joke",
 			page_title="Icanhazdadjoke API",
+			error=str(exc),
+		)
+
+
+@app.get("/quote")
+def quote():
+	try:
+		data = get_quote()
+		summary = f"{data.get('author', '不明な作者')} の名言を取得しました。"
+		return render_page(
+			"quote.html",
+			page_key="quote",
+			page_title="DummyJSON Quotes API",
+			summary=summary,
+			result=data,
+			result_json=json.dumps(data, ensure_ascii=False, indent=2),
+		)
+	except Exception as exc:  # noqa: BLE001
+		return render_page(
+			"quote.html",
+			page_key="quote",
+			page_title="DummyJSON Quotes API",
 			error=str(exc),
 		)
 
