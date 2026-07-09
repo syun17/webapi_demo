@@ -11,20 +11,20 @@
     <header class="hero">
       <div class="hero-copy">
         <p class="eyebrow">Web API demo</p>
-        <h1>複数のAPIを1つの画面で試せるデモアプリ</h1>
-        <p class="lead">気象庁、PokeAPI、JSONPlaceholder、Icanhazdadjoke、REST Countries、Random User、Lorem Picsum をまとめて扱います。</p>
+        <h1>{% if page_key == 'home' %}複数のAPIを1つずつ開けるデモアプリ{% else %}{{ page_title }}{% endif %}</h1>
+        <p class="lead">ホーム画面から各APIページへ遷移し、必要なものだけを読み込みます。</p>
       </div>
       <div class="hero-panel">
         <div class="hero-panel__label">対応API</div>
         <div class="hero-panel__value">7件</div>
-        <div class="hero-panel__note">フォームから入力して、その場で結果を確認できます。</div>
+        <div class="hero-panel__note">{% if page_key == 'home' %}各APIは専用ページで開きます。{% else %}<a class="card-link card-link--light" href="/">ホームに戻る</a>{% endif %}</div>
       </div>
     </header>
 
     <main class="layout">
       <section class="cards">
         {% for card in api_cards %}
-        <article class="api-card {% if active_api == card.path[1:] %}is-active{% endif %}">
+        <article class="api-card {% if page_key != 'home' and page_key == card.path[1:] %}is-active{% endif %}">
           <h2>{{ card.title }}</h2>
           <p>{{ card.description }}</p>
           <a class="card-link" href="{{ card.path }}">開く</a>
@@ -36,7 +36,7 @@
         <div class="panel-head">
           <div>
             <p class="eyebrow">API result</p>
-            <h2>{{ panel_title or '使い方' }}</h2>
+            <h2>{{ page_title or '使い方' }}</h2>
           </div>
           {% if summary %}
           <p class="summary">{{ summary }}</p>
@@ -50,7 +50,25 @@
         </div>
         {% endif %}
 
-        {% if result %}
+        {% if option_error %}
+        <div class="alert alert-warning">
+          <strong>一部の選択肢取得に失敗しました。</strong>
+          <span>{{ option_error }}</span>
+        </div>
+        {% endif %}
+
+        {% if page_key == 'home' %}
+        <div class="instruction-grid">
+          <article class="instruction-card">
+            <h3>使い方</h3>
+            <p>左のカードからAPIを選んで、専用ページを開いてください。</p>
+          </article>
+          <article class="instruction-card">
+            <h3>構成</h3>
+            <p>各APIページでは、そのAPIに必要なものだけを読み込みます。</p>
+          </article>
+        </div>
+        {% elif result %}
         <section class="result-grid">
           {% if result.name and result.image %}
           <div class="result-spotlight">
@@ -73,73 +91,106 @@
         <div class="instruction-grid">
           <article class="instruction-card">
             <h3>使い方</h3>
-            <p>左のカードからAPIを開き、クエリを入力して送信してください。</p>
+            <p>選択肢を選んで送信すると、結果がこの下に表示されます。</p>
           </article>
           <article class="instruction-card">
-            <h3>入力例</h3>
-            <p>天気: 270000, ポケモン: pikachu, 国名: Japan, 投稿ID: 1</p>
+            <h3>ホームへ</h3>
+            <p><a class="card-link" href="/">API一覧に戻る</a></p>
           </article>
         </div>
         {% endif %}
 
-        <section class="forms">
-          <form class="api-form" action="/weather" method="get">
-            <h3>気象庁 天気予報API</h3>
-            <label>予報区コード</label>
-            <input name="area_code" value="270000" placeholder="270000">
-            <button type="submit">取得する</button>
-          </form>
-
-          <form class="api-form" action="/pokemon" method="get">
-            <h3>PokeAPI</h3>
-            <label>ポケモン名</label>
-            <input name="name" value="pikachu" placeholder="pikachu">
-            <button type="submit">取得する</button>
-          </form>
-
-          <form class="api-form" action="/post" method="get">
-            <h3>JSONPlaceholder</h3>
-            <label>投稿ID</label>
-            <input name="post_id" value="1" placeholder="1">
-            <button type="submit">取得する</button>
-          </form>
-
-          <form class="api-form" action="/country" method="get">
-            <h3>REST Countries API</h3>
-            <label>国名</label>
-            <input name="name" value="Japan" placeholder="Japan">
-            <button type="submit">取得する</button>
-          </form>
-
-          <form class="api-form" action="/image" method="get">
-            <h3>Lorem Picsum</h3>
-            <div class="inline-fields">
-              <div>
-                <label>幅</label>
-                <input name="width" value="800" placeholder="800">
-              </div>
-              <div>
-                <label>高さ</label>
-                <input name="height" value="500" placeholder="500">
-              </div>
+        {% if page_key == 'weather' %}
+        <form class="api-form" action="/weather" method="get">
+          <h3>気象庁 天気予報API</h3>
+          <label for="area_code">予報区コード</label>
+          <select id="area_code" name="area_code">
+            {% for option in weather_area_codes %}
+            <option value="{{ option.value }}" {% if option.value == selected_area_code %}selected{% endif %}>{{ option.label }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit">取得する</button>
+        </form>
+        {% elif page_key == 'pokemon' %}
+        <form class="api-form" action="/pokemon" method="get">
+          <h3>PokeAPI</h3>
+          <label for="pokemon_name">ポケモン名</label>
+          <select id="pokemon_name" name="name">
+            {% for option in pokemon_names %}
+            <option value="{{ option.value }}" {% if option.value == selected_pokemon_name %}selected{% endif %}>{{ option.label }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit">取得する</button>
+        </form>
+        {% elif page_key == 'post' %}
+        <form class="api-form" action="/post" method="get">
+          <h3>JSONPlaceholder</h3>
+          <label for="post_id">投稿ID</label>
+          <select id="post_id" name="post_id">
+            {% for option in post_ids %}
+            <option value="{{ option.value }}" {% if option.value == selected_post_id %}selected{% endif %}>{{ option.label }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit">取得する</button>
+        </form>
+        {% elif page_key == 'country' %}
+        <form class="api-form" action="/country" method="get">
+          <h3>REST Countries API</h3>
+          <label for="country_name">国名</label>
+          <select id="country_name" name="name">
+            {% for option in country_names %}
+            <option value="{{ option.value }}" {% if option.value == selected_country_name %}selected{% endif %}>{{ option.label }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit">取得する</button>
+        </form>
+        {% elif page_key == 'image' %}
+        <form class="api-form" action="/image" method="get">
+          <h3>Lorem Picsum</h3>
+          <div class="inline-fields">
+            <div>
+              <label for="image_width">幅</label>
+              <select id="image_width" name="width">
+                {% for option in image_widths %}
+                <option value="{{ option.value }}">{{ option.label }}</option>
+                {% endfor %}
+              </select>
             </div>
-            <div class="inline-options">
-              <label><input type="checkbox" name="grayscale"> grayscale</label>
-              <label>blur <input name="blur" placeholder="2"></label>
+            <div>
+              <label for="image_height">高さ</label>
+              <select id="image_height" name="height">
+                {% for option in image_heights %}
+                <option value="{{ option.value }}">{{ option.label }}</option>
+                {% endfor %}
+              </select>
             </div>
-            <button type="submit">生成する</button>
-          </form>
-
-          <form class="api-form api-form--action" action="/joke" method="get">
-            <h3>Icanhazdadjoke API</h3>
-            <button type="submit">ダジャレを取得する</button>
-          </form>
-
-          <form class="api-form api-form--action" action="/user" method="get">
-            <h3>Random User API</h3>
-            <button type="submit">ユーザーを取得する</button>
-          </form>
-        </section>
+          </div>
+          <div class="inline-options">
+            <label for="grayscale_mode">grayscale</label>
+            <select id="grayscale_mode" name="grayscale">
+              <option value="off">なし</option>
+              <option value="on">あり</option>
+            </select>
+            <label for="blur_level">blur</label>
+            <select id="blur_level" name="blur">
+              {% for option in image_blurs %}
+              <option value="{{ option.value }}">{{ option.label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <button type="submit">生成する</button>
+        </form>
+        {% elif page_key == 'joke' %}
+        <form class="api-form api-form--action" action="/joke" method="get">
+          <h3>Icanhazdadjoke API</h3>
+          <button type="submit">ダジャレを取得する</button>
+        </form>
+        {% elif page_key == 'user' %}
+        <form class="api-form api-form--action" action="/user" method="get">
+          <h3>Random User API</h3>
+          <button type="submit">ユーザーを取得する</button>
+        </form>
+        {% endif %}
       </section>
     </main>
   </div>

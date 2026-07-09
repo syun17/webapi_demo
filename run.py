@@ -6,11 +6,15 @@ from flask import Flask, render_template, request
 
 from wether import (
 	get_country,
+	get_country_name_options,
 	get_joke,
 	get_picsum_url,
+	get_post_id_options,
 	get_post,
 	get_pokemon,
+	get_pokemon_name_options,
 	get_random_user,
+	get_weather_area_options,
 	get_weather,
 )
 
@@ -62,79 +66,113 @@ API_CARDS = [
 	},
 ]
 
+IMAGE_WIDTHS = [
+	{"value": "320", "label": "320"},
+	{"value": "640", "label": "640"},
+	{"value": "800", "label": "800"},
+]
 
-def render_dashboard(**context):
+IMAGE_HEIGHTS = [
+	{"value": "180", "label": "180"},
+	{"value": "360", "label": "360"},
+	{"value": "500", "label": "500"},
+]
+
+IMAGE_BLURS = [
+	{"value": "", "label": "なし"},
+	{"value": "1", "label": "1"},
+	{"value": "2", "label": "2"},
+	{"value": "3", "label": "3"},
+]
+
+
+def render_page(**context):
 	return render_template(
 		"index.html",
 		api_cards=API_CARDS,
+		image_widths=IMAGE_WIDTHS,
+		image_heights=IMAGE_HEIGHTS,
+		image_blurs=IMAGE_BLURS,
 		**context,
 	)
 
 
 @app.get("/")
 def index():
-	return render_dashboard()
+	return render_page(page_key="home", page_title="WebAPI Demo")
 
 
 @app.get("/weather")
 def weather():
-	area_code = request.args.get("area_code", "270000").strip() or "270000"
 	try:
+		weather_area_codes = get_weather_area_options()
+		area_code = request.args.get("area_code", weather_area_codes[0]["value"] if weather_area_codes else "270000").strip() or "270000"
 		data = get_weather(area_code)
 		summary = f"{data['area_name']} の天気予報を取得しました。"
-		return render_dashboard(
-			active_api="weather",
-			panel_title="気象庁 天気予報API",
+		return render_page(
+			page_key="weather",
+			page_title="気象庁 天気予報API",
+			weather_area_codes=weather_area_codes,
+			selected_area_code=area_code,
 			summary=summary,
 			result=data,
 			result_json=json.dumps(data, ensure_ascii=False, indent=2),
 		)
 	except Exception as exc:  # noqa: BLE001
-		return render_dashboard(
-			active_api="weather",
-			panel_title="気象庁 天気予報API",
+		return render_page(
+			page_key="weather",
+			page_title="気象庁 天気予報API",
+			weather_area_codes=[],
 			error=str(exc),
 		)
 
 
 @app.get("/pokemon")
 def pokemon():
-	name = request.args.get("name", "pikachu").strip() or "pikachu"
 	try:
+		pokemon_names = get_pokemon_name_options()
+		name = request.args.get("name", pokemon_names[0]["value"] if pokemon_names else "pikachu").strip() or "pikachu"
 		data = get_pokemon(name)
 		summary = f"{data['name'].title()} の情報を取得しました。"
-		return render_dashboard(
-			active_api="pokemon",
-			panel_title="PokeAPI",
+		return render_page(
+			page_key="pokemon",
+			page_title="PokeAPI",
+			pokemon_names=pokemon_names,
+			selected_pokemon_name=name,
 			summary=summary,
 			result=data,
 			result_json=json.dumps(data, ensure_ascii=False, indent=2),
 		)
 	except Exception as exc:  # noqa: BLE001
-		return render_dashboard(
-			active_api="pokemon",
-			panel_title="PokeAPI",
+		return render_page(
+			page_key="pokemon",
+			page_title="PokeAPI",
+			pokemon_names=[],
 			error=str(exc),
 		)
 
 
 @app.get("/post")
 def post():
-	post_id = request.args.get("post_id", "1").strip() or "1"
 	try:
+		post_ids = get_post_id_options()
+		post_id = request.args.get("post_id", post_ids[0]["value"] if post_ids else "1").strip() or "1"
 		data = get_post(int(post_id))
 		summary = f"投稿ID {data['id']} のデータを取得しました。"
-		return render_dashboard(
-			active_api="post",
-			panel_title="JSONPlaceholder",
+		return render_page(
+			page_key="post",
+			page_title="JSONPlaceholder",
+			post_ids=post_ids,
+			selected_post_id=post_id,
 			summary=summary,
 			result=data,
 			result_json=json.dumps(data, ensure_ascii=False, indent=2),
 		)
 	except Exception as exc:  # noqa: BLE001
-		return render_dashboard(
-			active_api="post",
-			panel_title="JSONPlaceholder",
+		return render_page(
+			page_key="post",
+			page_title="JSONPlaceholder",
+			post_ids=[],
 			error=str(exc),
 		)
 
@@ -144,39 +182,43 @@ def joke():
 	try:
 		data = get_joke()
 		summary = data["attachments"][0]["text"] if data.get("attachments") else "ダジャレを取得しました。"
-		return render_dashboard(
-			active_api="joke",
-			panel_title="Icanhazdadjoke API",
+		return render_page(
+			page_key="joke",
+			page_title="Icanhazdadjoke API",
 			summary=summary,
 			result=data,
 			result_json=json.dumps(data, ensure_ascii=False, indent=2),
 		)
 	except Exception as exc:  # noqa: BLE001
-		return render_dashboard(
-			active_api="joke",
-			panel_title="Icanhazdadjoke API",
+		return render_page(
+			page_key="joke",
+			page_title="Icanhazdadjoke API",
 			error=str(exc),
 		)
 
 
 @app.get("/country")
 def country():
-	name = request.args.get("name", "Japan").strip() or "Japan"
 	try:
+		country_names = get_country_name_options()
+		name = request.args.get("name", country_names[0]["value"] if country_names else "Japan").strip() or "Japan"
 		data = get_country(name)
 		first = data[0]
 		summary = f"{first['name']['common']} の情報を取得しました。"
-		return render_dashboard(
-			active_api="country",
-			panel_title="REST Countries API",
+		return render_page(
+			page_key="country",
+			page_title="REST Countries API",
+			country_names=country_names,
+			selected_country_name=name,
 			summary=summary,
 			result=data,
 			result_json=json.dumps(data, ensure_ascii=False, indent=2),
 		)
 	except Exception as exc:  # noqa: BLE001
-		return render_dashboard(
-			active_api="country",
-			panel_title="REST Countries API",
+		return render_page(
+			page_key="country",
+			page_title="REST Countries API",
+			country_names=[],
 			error=str(exc),
 		)
 
@@ -186,17 +228,17 @@ def user():
 	try:
 		data = get_random_user()
 		summary = "ランダムユーザーを取得しました。"
-		return render_dashboard(
-			active_api="user",
-			panel_title="Random User API",
+		return render_page(
+			page_key="user",
+			page_title="Random User API",
 			summary=summary,
 			result=data,
 			result_json=json.dumps(data, ensure_ascii=False, indent=2),
 		)
 	except Exception as exc:  # noqa: BLE001
-		return render_dashboard(
-			active_api="user",
-			panel_title="Random User API",
+		return render_page(
+			page_key="user",
+			page_title="Random User API",
 			error=str(exc),
 		)
 
@@ -220,18 +262,18 @@ def image():
 			"blur": blur_value,
 			"url": image_url,
 		}
-		return render_dashboard(
-			active_api="image",
-			panel_title="Lorem Picsum",
+		return render_page(
+			page_key="image",
+			page_title="Lorem Picsum",
 			summary=summary,
 			result=result,
 			result_json=json.dumps(result, ensure_ascii=False, indent=2),
 			image_url=image_url,
 		)
 	except Exception as exc:  # noqa: BLE001
-		return render_dashboard(
-			active_api="image",
-			panel_title="Lorem Picsum",
+		return render_page(
+			page_key="image",
+			page_title="Lorem Picsum",
 			error=str(exc),
 		)
 

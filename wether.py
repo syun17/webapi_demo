@@ -38,6 +38,18 @@ def get_weather(area_code: str = DEFAULT_WEATHER_AREA_CODE) -> dict[str, Any]:
     }
 
 
+def get_weather_area_options() -> list[dict[str, str]]:
+    data = fetch_json("https://www.jma.go.jp/bosai/common/const/area.json")
+    offices = data.get("offices", {})
+    options = []
+
+    for code, office in offices.items():
+        name = office.get("name") or code
+        options.append({"value": code, "label": f"{name} ({code})"})
+
+    return sorted(options, key=lambda item: item["label"])
+
+
 def get_pokemon(name: str) -> dict[str, Any]:
     url = f"https://pokeapi.co/api/v2/pokemon/{name.strip().lower()}"
     data = fetch_json(url)
@@ -51,9 +63,31 @@ def get_pokemon(name: str) -> dict[str, Any]:
     }
 
 
+def get_pokemon_name_options(limit: int = 30) -> list[dict[str, str]]:
+    data = fetch_json(f"https://pokeapi.co/api/v2/pokemon?limit={limit}&offset=0")
+    return [{"value": item["name"], "label": item["name"].title()} for item in data.get("results", [])]
+
+
 def get_post(post_id: int) -> dict[str, Any]:
     url = f"https://jsonplaceholder.typicode.com/posts/{post_id}"
     return fetch_json(url)
+
+
+def get_post_id_options(limit: int = 10) -> list[dict[str, str]]:
+    data = fetch_json("https://jsonplaceholder.typicode.com/posts")
+    unique_ids = []
+    seen_ids = set()
+
+    for item in data:
+        post_id = item.get("id")
+        if post_id in seen_ids:
+            continue
+        seen_ids.add(post_id)
+        unique_ids.append({"value": str(post_id), "label": str(post_id)})
+        if len(unique_ids) >= limit:
+            break
+
+    return unique_ids
 
 
 def get_joke() -> dict[str, Any]:
@@ -64,6 +98,18 @@ def get_joke() -> dict[str, Any]:
 def get_country(name: str) -> list[dict[str, Any]]:
     url = f"https://restcountries.com/v3.1/name/{name.strip()}"
     return fetch_json(url)
+
+
+def get_country_name_options(limit: int = 20) -> list[dict[str, str]]:
+    data = fetch_json("https://restcountries.com/v3.1/all?fields=name")
+    options = []
+
+    for item in data[:limit]:
+        country_name = item.get("name", {}).get("common")
+        if country_name:
+            options.append({"value": country_name, "label": country_name})
+
+    return sorted(options, key=lambda item: item["label"])
 
 
 def get_random_user() -> dict[str, Any]:
