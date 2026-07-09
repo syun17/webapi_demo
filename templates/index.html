@@ -7,6 +7,48 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+  {% macro render_json_node(node) -%}
+    {% if node.type == 'object' %}
+      <section class="json-node json-node--object">
+        <div class="json-node__head">
+          {% if node.label %}
+          <span class="json-node__label">{{ node.label }}</span>
+          {% endif %}
+          <span class="json-node__meta">object / {{ node.size }} fields</span>
+        </div>
+        <div class="json-node__children">
+          {% for child in node.children %}
+            {{ render_json_node(child) }}
+          {% endfor %}
+        </div>
+      </section>
+    {% elif node.type == 'array' %}
+      <section class="json-node json-node--array">
+        <div class="json-node__head">
+          {% if node.label %}
+          <span class="json-node__label">{{ node.label }}</span>
+          {% endif %}
+          <span class="json-node__meta">array / {{ node.size }} items</span>
+        </div>
+        <div class="json-node__children">
+          {% for child in node.children %}
+            {{ render_json_node(child) }}
+          {% endfor %}
+          {% if node.truncated %}
+          <div class="json-node__truncated">... and more</div>
+          {% endif %}
+        </div>
+      </section>
+    {% else %}
+      <div class="json-node json-node--primitive">
+        {% if node.label %}
+        <span class="json-node__label">{{ node.label }}</span>
+        {% endif %}
+        <span class="json-node__value">{{ node.value }}</span>
+      </div>
+    {% endif %}
+  {%- endmacro %}
+
   <div class="page-shell">
     <header class="hero">
       <div class="hero-copy">
@@ -85,7 +127,14 @@
           </div>
           {% endif %}
 
-          <pre class="json-view">{{ result_json }}</pre>
+          <div class="json-tree">
+            {{ render_json_node(formatted_result) }}
+          </div>
+
+          <details class="json-raw">
+            <summary>raw JSON</summary>
+            <pre class="json-view">{{ result_json }}</pre>
+          </details>
         </section>
         {% else %}
         <div class="instruction-grid">

@@ -139,6 +139,10 @@ body {
   text-decoration: none;
 }
 
+.card-link--light {
+  color: #e2e8f0;
+}
+
 .workspace {
   border-radius: 28px;
   padding: 28px;
@@ -213,6 +217,78 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.08);
   font-size: 0.9rem;
   line-height: 1.65;
+}
+
+.json-tree {
+  display: grid;
+  gap: 12px;
+}
+
+.json-node {
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(8, 17, 31, 0.72);
+  padding: 14px 16px;
+}
+
+.json-node--object,
+.json-node--array {
+  display: grid;
+  gap: 12px;
+}
+
+.json-node--primitive {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: baseline;
+}
+
+.json-node__head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  color: var(--muted);
+}
+
+.json-node__label {
+  color: var(--accent);
+  font-weight: 700;
+  word-break: break-word;
+}
+
+.json-node__meta {
+  font-size: 0.84rem;
+  white-space: nowrap;
+}
+
+.json-node__children {
+  display: grid;
+  gap: 10px;
+  padding-left: 12px;
+  border-left: 1px solid rgba(125, 211, 252, 0.22);
+}
+
+.json-node__value {
+  color: #f8fafc;
+  word-break: break-word;
+}
+
+.json-node__truncated {
+  color: var(--muted);
+  font-style: italic;
+  padding: 0 2px;
+}
+
+.json-raw {
+  margin-top: 8px;
+}
+
+.json-raw summary {
+  cursor: pointer;
+  color: var(--accent);
+  margin-bottom: 10px;
 }
 
 .instruction-grid {

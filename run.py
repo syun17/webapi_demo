@@ -21,6 +21,56 @@ from wether import (
 app = Flask(__name__)
 
 
+def format_json_value(value, *, label=None, depth=0, max_depth=4, max_items=8):
+	if depth >= max_depth:
+		return {
+			"type": "primitive",
+			"label": label,
+			"value": "...",
+		}
+
+	if isinstance(value, dict):
+		return {
+			"type": "object",
+			"label": label,
+			"size": len(value),
+			"children": [
+				format_json_value(item_value, label=str(item_key), depth=depth + 1, max_depth=max_depth, max_items=max_items)
+				for item_key, item_value in value.items()
+			],
+		}
+
+	if isinstance(value, list):
+		items = [
+			format_json_value(item, label=f"[{index}]", depth=depth + 1, max_depth=max_depth, max_items=max_items)
+			for index, item in enumerate(value[:max_items])
+		]
+		return {
+			"type": "array",
+			"label": label,
+			"size": len(value),
+			"children": items,
+			"truncated": len(value) > max_items,
+		}
+
+	if value is None:
+		display_value = "null"
+	elif isinstance(value, bool):
+		display_value = "true" if value else "false"
+	else:
+		display_value = str(value)
+
+	return {
+		"type": "primitive",
+		"label": label,
+		"value": display_value,
+	}
+
+
+def format_json_data(data):
+	return format_json_value(data)
+
+
 API_CARDS = [
 	{
 		"title": "気象庁 天気予報API",
@@ -87,6 +137,8 @@ IMAGE_BLURS = [
 
 
 def render_page(**context):
+	if context.get("result") is not None and "formatted_result" not in context:
+		context["formatted_result"] = format_json_data(context["result"])
 	return render_template(
 		"index.html",
 		api_cards=API_CARDS,
