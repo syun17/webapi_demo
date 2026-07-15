@@ -17,6 +17,24 @@ from wether import (
 	get_quote,
 	get_weather_area_options,
 	get_weather,
+	get_wanted_list,
+	get_age_prediction,
+	get_official_random_joke,
+	get_zipcloud_address,
+	search_location,
+	get_avatar_url,
+	get_activity,
+	get_related_words,
+	search_universities,
+	get_postal_info,
+	get_public_ip,
+	get_iss_location,
+	get_astronauts,
+	get_request_info,
+	get_products,
+	get_all_countries,
+	shuffle_new_deck,
+	get_chuck_norris_joke,
 )
 
 app = Flask(__name__)
@@ -119,6 +137,114 @@ API_CARDS = [
 		"title": "Lorem Picsum",
 		"description": "ランダムな画像URLを生成して表示します。",
 		"path": "/image",
+		"placeholder": "",
+	},
+	{
+		"title": "FBI Wanted API",
+		"description": "FBIが公開している指名手配者情報を取得します。",
+		"path": "/fbi-wanted",
+		"placeholder": "",
+	},
+	{
+		"title": "Agify API",
+		"description": "名前から推定年齢を取得します。",
+		"path": "/agify",
+		"placeholder": "michael",
+	},
+	{
+		"title": "Official Joke API",
+		"description": "ランダムな英語のジョークを取得します。",
+		"path": "/official-joke",
+		"placeholder": "",
+	},
+	{
+		"title": "zipcloud",
+		"description": "郵便番号から住所を取得します。",
+		"path": "/zipcloud",
+		"placeholder": "1000001",
+	},
+	{
+		"title": "Nominatim (OpenStreetMap)",
+		"description": "地名・住所から緯度経度を検索します。",
+		"path": "/nominatim",
+		"placeholder": "Tokyo Tower",
+	},
+	{
+		"title": "UI Avatars",
+		"description": "名前のイニシャルからアバター画像を生成します。",
+		"path": "/ui-avatars",
+		"placeholder": "Taro Yamada",
+	},
+	{
+		"title": "Bored API",
+		"description": "暇つぶしのアクティビティ案を取得します。",
+		"path": "/bored",
+		"placeholder": "",
+	},
+	{
+		"title": "DataMuse API",
+		"description": "意味が似ている英単語を検索します。",
+		"path": "/datamuse",
+		"placeholder": "happy",
+	},
+	{
+		"title": "University Domains API",
+		"description": "国名から大学一覧を検索します。",
+		"path": "/university",
+		"placeholder": "Japan",
+	},
+	{
+		"title": "Zippopotam.us API",
+		"description": "国コードと郵便番号から住所情報を取得します。",
+		"path": "/zippopotamus",
+		"placeholder": "90210",
+	},
+	{
+		"title": "IPify API",
+		"description": "サーバーのグローバルIPアドレスを取得します。",
+		"path": "/ipify",
+		"placeholder": "",
+	},
+	{
+		"title": "Open Notify API (ISS)",
+		"description": "国際宇宙ステーションの現在位置を取得します。",
+		"path": "/iss-location",
+		"placeholder": "",
+	},
+	{
+		"title": "Open Notify Astronaut API",
+		"description": "現在宇宙に滞在中の宇宙飛行士一覧を取得します。",
+		"path": "/astronauts",
+		"placeholder": "",
+	},
+	{
+		"title": "HTTPBin API",
+		"description": "HTTPリクエストの内容を確認します。",
+		"path": "/httpbin",
+		"placeholder": "",
+	},
+	{
+		"title": "Fake Store API",
+		"description": "ダミーの商品情報を取得します。",
+		"path": "/fake-store",
+		"placeholder": "5",
+	},
+	{
+		"title": "Countries Now API",
+		"description": "世界各国と都市の一覧を取得します。",
+		"path": "/countries-now",
+		"placeholder": "",
+	},
+	{
+		"title": "Deck of Cards API",
+		"description": "シャッフル済みのトランプの新しいデッキを取得します。",
+		"path": "/deck-of-cards",
+		"placeholder": "1",
+	},
+	{
+		"title": "Chuck Norris API",
+		"description": "チャック・ノリスに関するジョークを取得します。",
+		"path": "/chuck-norris",
 		"placeholder": "",
 	},
 ]
@@ -393,6 +519,441 @@ def image():
 			"image.html",
 			page_key="image",
 			page_title="Lorem Picsum",
+			error=str(exc),
+		)
+
+
+@app.get("/fbi-wanted")
+def fbi_wanted():
+	try:
+		data = get_wanted_list()
+		items = data.get("items", [])
+		summary = f"{data.get('total', len(items))}件の指名手配情報のうち{len(items)}件を取得しました。"
+		return render_page(
+			"fbi_wanted.html",
+			page_key="fbi-wanted",
+			page_title="FBI Wanted API",
+			summary=summary,
+			result=data,
+			wanted_items=items[:10],
+			result_json=json.dumps(data, ensure_ascii=False, indent=2),
+		)
+	except Exception as exc:  # noqa: BLE001
+		return render_page(
+			"fbi_wanted.html",
+			page_key="fbi-wanted",
+			page_title="FBI Wanted API",
+			error=str(exc),
+		)
+
+
+@app.get("/agify")
+def agify():
+	name = request.args.get("name", "michael").strip() or "michael"
+	try:
+		data = get_age_prediction(name)
+		summary = f"{data.get('name')} さんの推定年齢は {data.get('age')} 歳です。"
+		return render_page(
+			"agify.html",
+			page_key="agify",
+			page_title="Agify API",
+			selected_name=name,
+			summary=summary,
+			result=data,
+			result_json=json.dumps(data, ensure_ascii=False, indent=2),
+		)
+	except Exception as exc:  # noqa: BLE001
+		return render_page(
+			"agify.html",
+			page_key="agify",
+			page_title="Agify API",
+			selected_name=name,
+			error=str(exc),
+		)
+
+
+@app.get("/official-joke")
+def official_joke():
+	try:
+		data = get_official_random_joke()
+		summary = data.get("setup", "ジョークを取得しました。")
+		return render_page(
+			"official_joke.html",
+			page_key="official-joke",
+			page_title="Official Joke API",
+			summary=summary,
+			result=data,
+			result_json=json.dumps(data, ensure_ascii=False, indent=2),
+		)
+	except Exception as exc:  # noqa: BLE001
+		return render_page(
+			"official_joke.html",
+			page_key="official-joke",
+			page_title="Official Joke API",
+			error=str(exc),
+		)
+
+
+@app.get("/zipcloud")
+def zipcloud():
+	zipcode = request.args.get("zipcode", "1000001").strip() or "1000001"
+	try:
+		data = get_zipcloud_address(zipcode)
+		results = data.get("results") or []
+		summary = f"{results[0]['address1']}{results[0]['address2']}{results[0]['address3']} を取得しました。" if results else "該当する住所が見つかりませんでした。"
+		return render_page(
+			"zipcloud.html",
+			page_key="zipcloud",
+			page_title="zipcloud",
+			selected_zipcode=zipcode,
+			summary=summary,
+			result=data,
+			result_json=json.dumps(data, ensure_ascii=False, indent=2),
+		)
+	except Exception as exc:  # noqa: BLE001
+		return render_page(
+			"zipcloud.html",
+			page_key="zipcloud",
+			page_title="zipcloud",
+			selected_zipcode=zipcode,
+			error=str(exc),
+		)
+
+
+@app.get("/nominatim")
+def nominatim():
+	query = request.args.get("query", "Tokyo Tower").strip() or "Tokyo Tower"
+	try:
+		data = search_location(query)
+		summary = f"{len(data)}件の候補地が見つかりました。" if data else "候補地が見つかりませんでした。"
+		return render_page(
+			"nominatim.html",
+			page_key="nominatim",
+			page_title="Nominatim (OpenStreetMap)",
+			selected_query=query,
+			summary=summary,
+			result=data,
+			result_json=json.dumps(data, ensure_ascii=False, indent=2),
+		)
+	except Exception as exc:  # noqa: BLE001
+		return render_page(
+			"nominatim.html",
+			page_key="nominatim",
+			page_title="Nominatim (OpenStreetMap)",
+			selected_query=query,
+			error=str(exc),
+		)
+
+
+@app.get("/ui-avatars")
+def ui_avatars():
+	name = request.args.get("name", "Taro Yamada").strip() or "Taro Yamada"
+	try:
+		avatar_url = get_avatar_url(name)
+		summary = f"{name} のアバター画像URLを生成しました。"
+		result = {"name": name, "url": avatar_url}
+		return render_page(
+			"ui_avatars.html",
+			page_key="ui-avatars",
+			page_title="UI Avatars",
+			selected_name=name,
+			summary=summary,
+			result=result,
+			result_json=json.dumps(result, ensure_ascii=False, indent=2),
+			avatar_url=avatar_url,
+		)
+	except Exception as exc:  # noqa: BLE001
+		return render_page(
+			"ui_avatars.html",
+			page_key="ui-avatars",
+			page_title="UI Avatars",
+			selected_name=name,
+			error=str(exc),
+		)
+
+
+@app.get("/bored")
+def bored():
+	try:
+		data = get_activity()
+		summary = data.get("activity", "アクティビティを取得しました。")
+		return render_page(
+			"bored.html",
+			page_key="bored",
+			page_title="Bored API",
+			summary=summary,
+			result=data,
+			result_json=json.dumps(data, ensure_ascii=False, indent=2),
+		)
+	except Exception as exc:  # noqa: BLE001
+		return render_page(
+			"bored.html",
+			page_key="bored",
+			page_title="Bored API",
+			error=str(exc),
+		)
+
+
+@app.get("/datamuse")
+def datamuse():
+	word = request.args.get("word", "happy").strip() or "happy"
+	try:
+		data = get_related_words(word)
+		summary = f"「{word}」に関連する単語を{len(data)}件取得しました。"
+		return render_page(
+			"datamuse.html",
+			page_key="datamuse",
+			page_title="DataMuse API",
+			selected_word=word,
+			summary=summary,
+			result=data,
+			result_json=json.dumps(data, ensure_ascii=False, indent=2),
+		)
+	except Exception as exc:  # noqa: BLE001
+		return render_page(
+			"datamuse.html",
+			page_key="datamuse",
+			page_title="DataMuse API",
+			selected_word=word,
+			error=str(exc),
+		)
+
+
+@app.get("/university")
+def university():
+	country = request.args.get("country", "Japan").strip() or "Japan"
+	try:
+		data = search_universities(country)
+		summary = f"{country} の大学を{len(data)}件取得しました。"
+		return render_page(
+			"university.html",
+			page_key="university",
+			page_title="University Domains API",
+			selected_country=country,
+			summary=summary,
+			result=data[:20],
+			result_json=json.dumps(data[:20], ensure_ascii=False, indent=2),
+		)
+	except Exception as exc:  # noqa: BLE001
+		return render_page(
+			"university.html",
+			page_key="university",
+			page_title="University Domains API",
+			selected_country=country,
+			error=str(exc),
+		)
+
+
+@app.get("/zippopotamus")
+def zippopotamus():
+	country = request.args.get("country", "us").strip() or "us"
+	postal_code = request.args.get("postal_code", "90210").strip() or "90210"
+	try:
+		data = get_postal_info(country, postal_code)
+		summary = f"{data.get('place name', '')} の住所情報を取得しました。"
+		return render_page(
+			"zippopotamus.html",
+			page_key="zippopotamus",
+			page_title="Zippopotam.us API",
+			selected_country=country,
+			selected_postal_code=postal_code,
+			summary=summary,
+			result=data,
+			result_json=json.dumps(data, ensure_ascii=False, indent=2),
+		)
+	except Exception as exc:  # noqa: BLE001
+		return render_page(
+			"zippopotamus.html",
+			page_key="zippopotamus",
+			page_title="Zippopotam.us API",
+			selected_country=country,
+			selected_postal_code=postal_code,
+			error=str(exc),
+		)
+
+
+@app.get("/ipify")
+def ipify():
+	try:
+		data = get_public_ip()
+		summary = f"グローバルIPアドレス: {data.get('ip')}"
+		return render_page(
+			"ipify.html",
+			page_key="ipify",
+			page_title="IPify API",
+			summary=summary,
+			result=data,
+			result_json=json.dumps(data, ensure_ascii=False, indent=2),
+		)
+	except Exception as exc:  # noqa: BLE001
+		return render_page(
+			"ipify.html",
+			page_key="ipify",
+			page_title="IPify API",
+			error=str(exc),
+		)
+
+
+@app.get("/iss-location")
+def iss_location():
+	try:
+		data = get_iss_location()
+		position = data.get("iss_position", {})
+		summary = f"ISSの現在位置: 緯度 {position.get('latitude')} / 経度 {position.get('longitude')}"
+		return render_page(
+			"iss_location.html",
+			page_key="iss-location",
+			page_title="Open Notify API (ISS)",
+			summary=summary,
+			result=data,
+			result_json=json.dumps(data, ensure_ascii=False, indent=2),
+		)
+	except Exception as exc:  # noqa: BLE001
+		return render_page(
+			"iss_location.html",
+			page_key="iss-location",
+			page_title="Open Notify API (ISS)",
+			error=str(exc),
+		)
+
+
+@app.get("/astronauts")
+def astronauts():
+	try:
+		data = get_astronauts()
+		summary = f"現在宇宙に{data.get('number', 0)}人の宇宙飛行士が滞在しています。"
+		return render_page(
+			"astronauts.html",
+			page_key="astronauts",
+			page_title="Open Notify Astronaut API",
+			summary=summary,
+			result=data,
+			result_json=json.dumps(data, ensure_ascii=False, indent=2),
+		)
+	except Exception as exc:  # noqa: BLE001
+		return render_page(
+			"astronauts.html",
+			page_key="astronauts",
+			page_title="Open Notify Astronaut API",
+			error=str(exc),
+		)
+
+
+@app.get("/httpbin")
+def httpbin():
+	try:
+		data = get_request_info()
+		summary = f"リクエスト元IP: {data.get('origin')}"
+		return render_page(
+			"httpbin.html",
+			page_key="httpbin",
+			page_title="HTTPBin API",
+			summary=summary,
+			result=data,
+			result_json=json.dumps(data, ensure_ascii=False, indent=2),
+		)
+	except Exception as exc:  # noqa: BLE001
+		return render_page(
+			"httpbin.html",
+			page_key="httpbin",
+			page_title="HTTPBin API",
+			error=str(exc),
+		)
+
+
+@app.get("/fake-store")
+def fake_store():
+	limit = request.args.get("limit", "5").strip() or "5"
+	try:
+		limit_value = max(1, int(limit))
+		data = get_products(limit_value)
+		summary = f"商品を{len(data)}件取得しました。"
+		return render_page(
+			"fake_store.html",
+			page_key="fake-store",
+			page_title="Fake Store API",
+			selected_limit=str(limit_value),
+			summary=summary,
+			result=data,
+			result_json=json.dumps(data, ensure_ascii=False, indent=2),
+		)
+	except Exception as exc:  # noqa: BLE001
+		return render_page(
+			"fake_store.html",
+			page_key="fake-store",
+			page_title="Fake Store API",
+			selected_limit=limit,
+			error=str(exc),
+		)
+
+
+@app.get("/countries-now")
+def countries_now():
+	try:
+		data = get_all_countries()
+		countries = data.get("data", [])
+		summary = f"{len(countries)}か国の都市情報を取得しました。"
+		return render_page(
+			"countries_now.html",
+			page_key="countries-now",
+			page_title="Countries Now API",
+			summary=summary,
+			result=countries[:20],
+			result_json=json.dumps(countries[:20], ensure_ascii=False, indent=2),
+		)
+	except Exception as exc:  # noqa: BLE001
+		return render_page(
+			"countries_now.html",
+			page_key="countries-now",
+			page_title="Countries Now API",
+			error=str(exc),
+		)
+
+
+@app.get("/deck-of-cards")
+def deck_of_cards():
+	deck_count = request.args.get("deck_count", "1").strip() or "1"
+	try:
+		deck_count_value = max(1, int(deck_count))
+		data = shuffle_new_deck(deck_count_value)
+		summary = f"{data.get('remaining')}枚のカードを含む新しいデッキを作成しました。"
+		return render_page(
+			"deck_of_cards.html",
+			page_key="deck-of-cards",
+			page_title="Deck of Cards API",
+			selected_deck_count=str(deck_count_value),
+			summary=summary,
+			result=data,
+			result_json=json.dumps(data, ensure_ascii=False, indent=2),
+		)
+	except Exception as exc:  # noqa: BLE001
+		return render_page(
+			"deck_of_cards.html",
+			page_key="deck-of-cards",
+			page_title="Deck of Cards API",
+			selected_deck_count=deck_count,
+			error=str(exc),
+		)
+
+
+@app.get("/chuck-norris")
+def chuck_norris():
+	try:
+		data = get_chuck_norris_joke()
+		summary = data.get("value", "ジョークを取得しました。")
+		return render_page(
+			"chuck_norris.html",
+			page_key="chuck-norris",
+			page_title="Chuck Norris API",
+			summary=summary,
+			result=data,
+			result_json=json.dumps(data, ensure_ascii=False, indent=2),
+		)
+	except Exception as exc:  # noqa: BLE001
+		return render_page(
+			"chuck_norris.html",
+			page_key="chuck-norris",
+			page_title="Chuck Norris API",
 			error=str(exc),
 		)
 

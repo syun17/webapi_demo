@@ -63,7 +63,7 @@ WebAPIをまとめて試せるFlaskアプリです。
 
     初回のみ
     ```cmd
-    python - m venv venv
+    python -m venv venv
     ```
     
     起動時
