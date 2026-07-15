@@ -47,11 +47,11 @@
 
   {% if result %}
   <section class="result-grid">
-    {% if result.items %}
+    {% if result['items'] %}
     <div class="api-result-card">
       <h3 class="api-result-title">{{ result.area_name }}</h3>
       <div class="weather-items">
-        {% for item in result.items %}
+        {% for item in result['items'] %}
         <div class="weather-item">
           <div class="weather-date">{{ item.date }}</div>
           <div class="weather-text">{{ item.weather }}</div>
