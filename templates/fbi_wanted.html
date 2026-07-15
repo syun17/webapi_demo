@@ -26,7 +26,7 @@
   <div class="instruction-grid">
     <article class="instruction-card">
       <h3>使い方</h3>
-      <p>予報区コードを選んで送信すると、結果がこの下に表示されます。</p>
+      <p>ボタンを押すと、FBIが公開している指名手配情報を取得します。</p>
     </article>
     <article class="instruction-card">
       <h3>ホームへ</h3>
@@ -34,30 +34,21 @@
     </article>
   </div>
 
-  <form class="api-form" action="/weather" method="get">
-    <h3>気象庁 天気予報API</h3>
-    <label for="area_code">予報区コード</label>
-    <select id="area_code" name="area_code">
-      {% for option in weather_area_codes %}
-      <option value="{{ option.value }}" {% if option.value == selected_area_code %}selected{% endif %}>{{ option.label }}</option>
-      {% endfor %}
-    </select>
-    <button type="submit">取得する</button>
+  <form class="api-form api-form--action" action="/fbi-wanted" method="get">
+    <h3>FBI Wanted API</h3>
+    <button type="submit">指名手配情報を取得する</button>
   </form>
 
   {% if result %}
   <section class="result-grid">
-    {% if result['items'] %}
+    {% if wanted_items %}
     <div class="api-result-card">
-      <h3 class="api-result-title">{{ result.area_name }}</h3>
-      <div class="weather-items">
-        {% for item in result['items'] %}
-        <div class="weather-item">
-          <div class="weather-date">{{ item.date }}</div>
-          <div class="weather-text">{{ item.weather }}</div>
-        </div>
+      <h3 class="api-result-title">指名手配者一覧</h3>
+      <ul>
+        {% for item in wanted_items %}
+        <li>{{ item.title }}</li>
         {% endfor %}
-      </div>
+      </ul>
     </div>
     {% endif %}
 
@@ -71,6 +62,4 @@
     </details>
   </section>
   {% endif %}
-
-  
 {% endblock %}

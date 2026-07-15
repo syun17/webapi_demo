@@ -26,7 +26,7 @@
   <div class="instruction-grid">
     <article class="instruction-card">
       <h3>使い方</h3>
-      <p>予報区コードを選んで送信すると、結果がこの下に表示されます。</p>
+      <p>ボタンを押すと、現在宇宙に滞在中の宇宙飛行士一覧を取得します。</p>
     </article>
     <article class="instruction-card">
       <h3>ホームへ</h3>
@@ -34,33 +34,13 @@
     </article>
   </div>
 
-  <form class="api-form" action="/weather" method="get">
-    <h3>気象庁 天気予報API</h3>
-    <label for="area_code">予報区コード</label>
-    <select id="area_code" name="area_code">
-      {% for option in weather_area_codes %}
-      <option value="{{ option.value }}" {% if option.value == selected_area_code %}selected{% endif %}>{{ option.label }}</option>
-      {% endfor %}
-    </select>
-    <button type="submit">取得する</button>
+  <form class="api-form api-form--action" action="/astronauts" method="get">
+    <h3>Open Notify Astronaut API</h3>
+    <button type="submit">宇宙飛行士一覧を取得する</button>
   </form>
 
   {% if result %}
   <section class="result-grid">
-    {% if result['items'] %}
-    <div class="api-result-card">
-      <h3 class="api-result-title">{{ result.area_name }}</h3>
-      <div class="weather-items">
-        {% for item in result['items'] %}
-        <div class="weather-item">
-          <div class="weather-date">{{ item.date }}</div>
-          <div class="weather-text">{{ item.weather }}</div>
-        </div>
-        {% endfor %}
-      </div>
-    </div>
-    {% endif %}
-
     <div class="json-tree">
       {{ render_json_node(formatted_result) }}
     </div>
@@ -71,6 +51,4 @@
     </details>
   </section>
   {% endif %}
-
-  
 {% endblock %}
